@@ -19,6 +19,8 @@
 
 @interface ViewController (){
     CLLocationManager *locationManager;
+    float latestLatitude;
+    float latestLongitude;
 }
 
 @end
@@ -88,6 +90,8 @@
             for(CLPlacemark *placemark in placemarks){
                 NSLog(@"placemark info***: latitude %f & longitude %f", [[placemark location] coordinate].latitude, [[placemark location] coordinate].longitude);
                 
+                latestLatitude = [[placemark location] coordinate].latitude;
+                latestLongitude = [[placemark location] coordinate].longitude;
                 //TODO populate current location information
                 
                 //[locationButton setEnabled:YES];
@@ -101,6 +105,51 @@
 }
 
 #pragma mark - My Methods
+
+-(void)sendLocationInformation{
+
+    [SVProgressHUD showWithStatus:@"Loading" maskType:SVProgressHUDMaskTypeGradient];
+    
+    NSURL *editedUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@=%f&%@=%f", kSendLocationUrl, kJSONLatitude, latestLatitude, kJSONLongitude, latestLongitude]];
+    
+    NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:editedUrl];
+    [mutableRequest setTimeoutInterval:10];
+    [mutableRequest setHTTPMethod:@"POST"];
+    
+    AFJSONRequestOperation *requestOperation = [AFJSONRequestOperation JSONRequestOperationWithRequest:mutableRequest success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        if(kLoggingEnabled)NSLog(@"send location information response json: %@", JSON);
+        if([JSON valueForKeyPath:kJSONStatus] && [[JSON valueForKeyPath:kJSONStatus] isEqualToString:kJSONStatusSuccess]){
+            [SVProgressHUD dismiss];
+            NSDictionary *resultDictionary = [JSON valueForKeyPath:kJSONResult];
+            
+            //TODO Success code
+            
+        }else if([JSON valueForKeyPath:kJSONStatus] && [[JSON valueForKeyPath:kJSONStatus] isEqualToString:kJSONStatusError]){
+            [SVProgressHUD dismiss];
+          
+            NSDictionary *resultDictionary = [JSON valueForKeyPath:kJSONResult];
+            NSString *errorMessage = [resultDictionary objectForKey:kJSONFriendlyError];
+            UIAlertView *loginErrorAlertView = [[UIAlertView alloc] initWithTitle:@"Error" message:errorMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [loginErrorAlertView show];
+        }else{
+            [SVProgressHUD dismiss];
+            
+            UIAlertView *errorAlertView = [[UIAlertView alloc] initWithTitle:@"Error" message:kConnectionErrorText delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [errorAlertView show];
+        }
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        [SVProgressHUD dismiss];
+
+        if(kLoggingEnabled)NSLog(@"check limitations failure error: \n%@", error);
+        
+        UIAlertView *loginErrorAlertView = [[UIAlertView alloc] initWithTitle:@"Error" message:kConnectionErrorText delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [loginErrorAlertView show];
+    }];
+    
+    [requestOperation start];
+    
+    
+}
 
 -(void)getLocationInformation{
     // [(UIActivityIndicatorView *)[locationButton viewWithTag:TAG_SPINNER_VIEW] startAnimating];

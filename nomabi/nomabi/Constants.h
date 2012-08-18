@@ -24,6 +24,8 @@ extern NSString *const kJSONStatusSuccess;
 extern NSString *const kJSONStatusError;
 extern NSString *const kJSONResult;
 extern NSString *const kJSONFriendlyError;
+extern NSString *const kJSONLongitude;
+extern NSString *const kJSONLatitude;
 
 
 //ERROR TEXT
@@ -40,7 +42,7 @@ extern int kItemNameFieldLimit;
 extern int kDateFontSize;
 
 //URLS
-extern NSString *const kSignInURL;
+extern NSString *const kSendLocationUrl;
 
 
 #define TEXT_BACKGROUND_COLOR [UIColor colorWithRed:199/255.0 green:227/255.0 blue:241/255.0 alpha:0.6]

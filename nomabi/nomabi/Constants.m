@@ -9,7 +9,7 @@
 #import "Constants.h"
 
 
-BOOL const kLoggingEnabled = NO;
+BOOL const kLoggingEnabled = YES;
 
 NSString *const kAccessTokenKeyName = @"";
 NSString *const kAccessToken = @"";
@@ -27,6 +27,8 @@ NSString *const kJSONStatusSuccess = @"success";
 NSString *const kJSONStatusError = @"error";
 NSString *const kJSONResult = @"result";
 NSString *const kJSONFriendlyError = @"friendly_error";
+NSString *const kJSONLongitude = @"longitude";
+NSString *const kJSONLatitude = @"latitude";
 
 
 //ERROR TEXT
@@ -44,9 +46,7 @@ int kItemNameFieldLimit = 15;
 int kDateFontSize = 14;
 
 //LOCALHOST URLS
-/*
- NSString *const kSignInURL                      = @"http://localhost:3000/mobile/user_login";
 
- */
+ NSString *const kSendLocationUrl                      = @"http://localhost:3000/mobile/user_login";
 
 
