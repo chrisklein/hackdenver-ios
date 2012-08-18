@@ -34,6 +34,7 @@
 		C1BA24D115DF46AC00CE018A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1BA24D015DF46AC00CE018A /* ViewController.m */; };
 		C1BA24D415DF46AC00CE018A /* ViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = C1BA24D215DF46AC00CE018A /* ViewController_iPhone.xib */; };
 		C1BA24D715DF46AC00CE018A /* ViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = C1BA24D515DF46AC00CE018A /* ViewController_iPad.xib */; };
+		DC8B7E3915DF83500003C870 /* MQMapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC8B7E3815DF83500003C870 /* MQMapKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -82,6 +83,7 @@
 		C1BA24D015DF46AC00CE018A /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		C1BA24D315DF46AC00CE018A /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController_iPhone.xib; sourceTree = "<group>"; };
 		C1BA24D615DF46AC00CE018A /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController_iPad.xib; sourceTree = "<group>"; };
+		DC8B7E3815DF83500003C870 /* MQMapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MQMapKit.framework; path = ../../../Desktop/MQMapKit_1.0.1/MQMapKit.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +91,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC8B7E3915DF83500003C870 /* MQMapKit.framework in Frameworks */,
 				C140744415DF494D0093BEF0 /* MQMapKit.framework in Frameworks */,
 				C140744215DF490F0093BEF0 /* libxml2.dylib in Frameworks */,
 				C140744015DF48FE0093BEF0 /* AddressBook.framework in Frameworks */,
@@ -163,6 +166,7 @@
 		C1BA24BC15DF46AB00CE018A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DC8B7E3815DF83500003C870 /* MQMapKit.framework */,
 				C140744315DF494D0093BEF0 /* MQMapKit.framework */,
 				C140744115DF490F0093BEF0 /* libxml2.dylib */,
 				C140743F15DF48FE0093BEF0 /* AddressBook.framework */,
@@ -323,7 +327,8 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Phillip Beadle (YF98XZ82PQ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Phillip Beadle (YF98XZ82PQ)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -338,6 +343,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				PROVISIONING_PROFILE = "657C424E-BB7B-439E-BC16-100333E5995B";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "657C424E-BB7B-439E-BC16-100333E5995B";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -372,6 +379,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../../Downloads/MQMapKit_1.0.1\"",
+					"\"$(SRCROOT)/../../../Desktop/MQMapKit_1.0.1\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "nomabi/nomabi-Prefix.pch";
@@ -387,6 +395,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../../Downloads/MQMapKit_1.0.1\"",
+					"\"$(SRCROOT)/../../../Desktop/MQMapKit_1.0.1\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "nomabi/nomabi-Prefix.pch";

@@ -21,6 +21,7 @@
     CLLocationManager *locationManager;
     float latestLatitude;
     float latestLongitude;
+    NSDictionary *resultDictionary;
 }
 
 @end
@@ -46,6 +47,11 @@
 {
     [super viewDidUnload];
     // Release any retained subviews of the main view.
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self sendCurrentLocationAndGetBeacons];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -150,6 +156,150 @@
     
     
 }
+
+
+/*
+ * Index
+ * Eventually, we'll send our current location in the method and return a list of beacons within a give radius
+ */
+
+-(void)sendCurrentLocationAndGetBeacons{
+    
+    [SVProgressHUD showWithStatus:@"Loading" maskType:SVProgressHUDMaskTypeGradient];
+    
+    //NSURL *editedUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@=%f&%@=%f", @"http://localhost:3000/beacons", kJSONLatitude, latestLatitude, kJSONLongitude, latestLongitude]];
+    
+    NSURL *editedUrl = [NSURL URLWithString:@"http://10.0.1.147:3000/beacons.json"];
+    
+    
+    NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:editedUrl];
+    [mutableRequest setTimeoutInterval:10];
+    [mutableRequest setHTTPMethod:@"GET"];
+    
+    AFJSONRequestOperation *requestOperation = [AFJSONRequestOperation JSONRequestOperationWithRequest:mutableRequest success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        if(kLoggingEnabled)NSLog(@"send location information response json: %@", JSON);
+      
+        [SVProgressHUD dismiss];
+        resultDictionary = JSON;
+        if(kLoggingEnabled)NSLog(@"result dictionary: %@", resultDictionary);
+        
+
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        [SVProgressHUD dismiss];
+        
+        if(kLoggingEnabled)NSLog(@"check limitations failure error: \n%@", error);
+        
+        UIAlertView *loginErrorAlertView = [[UIAlertView alloc] initWithTitle:@"Error" message:kConnectionErrorText delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [loginErrorAlertView show];
+    }];
+    
+    [requestOperation start];
+    
+    
+}
+
+
+/*
+ * Create 
+ * Send our current location and put ourselves on the map
+ * Putting ourselves on the map makes our contatcts available to those around us
+ */
+
+-(void)createBeaconAndMakeLocationAvailableToOthers{
+    
+    [SVProgressHUD showWithStatus:@"Loading" maskType:SVProgressHUDMaskTypeGradient];
+    
+    NSURL *editedUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@=%f&%@=%f", kSendLocationUrl, kJSONLatitude, latestLatitude, kJSONLongitude, latestLongitude]];
+    
+    NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:editedUrl];
+    [mutableRequest setTimeoutInterval:10];
+    [mutableRequest setHTTPMethod:@"POST"];
+    
+    AFJSONRequestOperation *requestOperation = [AFJSONRequestOperation JSONRequestOperationWithRequest:mutableRequest success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        if(kLoggingEnabled)NSLog(@"send location information response json: %@", JSON);
+        if([JSON valueForKeyPath:kJSONStatus] && [[JSON valueForKeyPath:kJSONStatus] isEqualToString:kJSONStatusSuccess]){
+            [SVProgressHUD dismiss];
+            NSDictionary *resultDictionary = [JSON valueForKeyPath:kJSONResult];
+            
+            //TODO Success code
+            
+        }else if([JSON valueForKeyPath:kJSONStatus] && [[JSON valueForKeyPath:kJSONStatus] isEqualToString:kJSONStatusError]){
+            [SVProgressHUD dismiss];
+            
+            NSDictionary *resultDictionary = [JSON valueForKeyPath:kJSONResult];
+            NSString *errorMessage = [resultDictionary objectForKey:kJSONFriendlyError];
+            UIAlertView *loginErrorAlertView = [[UIAlertView alloc] initWithTitle:@"Error" message:errorMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [loginErrorAlertView show];
+        }else{
+            [SVProgressHUD dismiss];
+            
+            UIAlertView *errorAlertView = [[UIAlertView alloc] initWithTitle:@"Error" message:kConnectionErrorText delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [errorAlertView show];
+        }
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        [SVProgressHUD dismiss];
+        
+        if(kLoggingEnabled)NSLog(@"check limitations failure error: \n%@", error);
+        
+        UIAlertView *loginErrorAlertView = [[UIAlertView alloc] initWithTitle:@"Error" message:kConnectionErrorText delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [loginErrorAlertView show];
+    }];
+    
+    [requestOperation start];
+    
+    
+}
+
+
+/*
+ * Destroy
+ */
+
+-(void)destroyBeacon{
+    
+    [SVProgressHUD showWithStatus:@"Loading" maskType:SVProgressHUDMaskTypeGradient];
+    
+    NSURL *editedUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@=%f&%@=%f", kSendLocationUrl, kJSONLatitude, latestLatitude, kJSONLongitude, latestLongitude]];
+    
+    NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:editedUrl];
+    [mutableRequest setTimeoutInterval:10];
+    [mutableRequest setHTTPMethod:@"POST"];
+    
+    AFJSONRequestOperation *requestOperation = [AFJSONRequestOperation JSONRequestOperationWithRequest:mutableRequest success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        if(kLoggingEnabled)NSLog(@"send location information response json: %@", JSON);
+        if([JSON valueForKeyPath:kJSONStatus] && [[JSON valueForKeyPath:kJSONStatus] isEqualToString:kJSONStatusSuccess]){
+            [SVProgressHUD dismiss];
+            NSDictionary *resultDictionary = [JSON valueForKeyPath:kJSONResult];
+            
+            //TODO Success code
+            
+        }else if([JSON valueForKeyPath:kJSONStatus] && [[JSON valueForKeyPath:kJSONStatus] isEqualToString:kJSONStatusError]){
+            [SVProgressHUD dismiss];
+            
+            NSDictionary *resultDictionary = [JSON valueForKeyPath:kJSONResult];
+            NSString *errorMessage = [resultDictionary objectForKey:kJSONFriendlyError];
+            UIAlertView *loginErrorAlertView = [[UIAlertView alloc] initWithTitle:@"Error" message:errorMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [loginErrorAlertView show];
+        }else{
+            [SVProgressHUD dismiss];
+            
+            UIAlertView *errorAlertView = [[UIAlertView alloc] initWithTitle:@"Error" message:kConnectionErrorText delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [errorAlertView show];
+        }
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        [SVProgressHUD dismiss];
+        
+        if(kLoggingEnabled)NSLog(@"check limitations failure error: \n%@", error);
+        
+        UIAlertView *loginErrorAlertView = [[UIAlertView alloc] initWithTitle:@"Error" message:kConnectionErrorText delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [loginErrorAlertView show];
+    }];
+    
+    [requestOperation start];
+    
+    
+}
+
 
 -(void)getLocationInformation{
     // [(UIActivityIndicatorView *)[locationButton viewWithTag:TAG_SPINNER_VIEW] startAnimating];
